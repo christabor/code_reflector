@@ -22,8 +22,13 @@ class HTMLReflector(Reflector):
         self.default_tag = default_tag
         self.css = None
 
-    def process(self, filename):
+    def process_string(self, css_string):
         """Parse stylesheet with tinycss."""
+        self.css = self.parser.parse_stylesheet_bytes(css_string)
+        return self
+
+    def process(self, filename):
+        """Parse stylesheet file with tinycss."""
         self.css = self.parser.parse_stylesheet_file(filename)
         return self
 
@@ -83,6 +88,13 @@ class HTMLReflector(Reflector):
             return self.default_tag
 
     def _create_tag(self, selector):
+        #   1. .foo.bar
+        #   2. #foo#bar
+        #   3. div.foo
+        #   4. div.foo#bar, div#foo.bar
+        #   5. div+#foo.bar
+        #   6. .foo>.bar > div#bam div.foo
+
         html = ''
         pieces = [x.strip() for x in selector.split('>')]
         if len(pieces) == 1:
@@ -105,16 +117,13 @@ class HTMLReflector(Reflector):
             html += '</{tag}>\n'.format(space=space, tag=tag)
         return html
 
-    def make_html(self, output):
+    def make_html(self, output=None, save_as_string=False):
         """Build out and write the actual HTML document."""
-        # TODO: handle suffix (pseudo-selectors)
-        # TODO: handle showing nested css (e.g. .foo>.bar.bam)
-        # TODO: handle chained selectors
-        #   1. .foo.bar
-        #   2. #foo#bar
-        #   3. div.foo
-        #   4. div.foo#bar, div#foo.bar
-        #   5. div+#foo.bar
+        if save_as_string:
+            out = ''
+            for selector in self.selectors:
+                out += self._create_tag(selector)
+            return out
         if not output.endswith('.html'):
             raise ValueError('{} if is not a valid html file.'.format(output))
         with open(output, 'wb+') as newfile:
@@ -124,6 +133,4 @@ class HTMLReflector(Reflector):
 
 if DEBUG:
     hreflector = HTMLReflector()
-    hreflector.process('test.css').extract().make_html(
-        'output-test.html')
-    # print(hreflector)
+    hreflector.process('test.css').extract().make_html(output='output.html')
