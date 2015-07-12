@@ -68,29 +68,28 @@ class CSSReflector(Reflector):
         # their attributes.
         while children:
             for child in children:
-                # Add first root selector, before appending child selectors.
+                # 1. Add current
                 self.selectors.add(selector)
-                # Build out child selectors to add to this one.
+                # 2. Add child
                 child = Pq(child)
-                id, classes = child.attr('id'), child.attr('class')
-                # Order is important here. Id comes first, then classes,
-                # and classes must not have a space at the beginning,
-                # but must have one at the end, so that nested elements
-                # are properly represented, as well as selector chains.
-                selector += self._add_id_and_classes(id, classes)
-                # Update child
-                children = Pq(child).children()
-                # Add selector on each loop, to show
-                # all levels of nesting in the CSS.
-                # e.g. .foo {}, .foo.bar {}. .foo.bar #baz
+                child = Pq(child)
+                selector += self._add_id_and_classes(child)
                 self.selectors.add(selector)
+                # # 3. Move to next children
+                children = child.children()
 
-    def _add_id_and_classes(self, id, classes):
+    def _add_id_and_classes(self, node):
+        """Order is important here. Id comes first, then classes,
+        and classes must not have a space at the beginning,
+        but must have one at the end, so that nested elements
+        are properly represented, as well as selector chains."""
+        id, classes = node.attr('id'), node.attr('class')
         extra = ''
         if id is not None:
             extra += ' #{}'.format(id)
         if classes is not None:
-            spaces = '' if id is not None else ' '
+            classes = '.'.join(classes.split(' '))
+            spaces = '' if id is not None and len(classes) > 1 else ' '
             extra += self._format_classes(classes, spaces=spaces)
         return extra
 
