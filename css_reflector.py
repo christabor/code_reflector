@@ -31,48 +31,62 @@ class CSSReflector(Reflector):
         parent = Pq(element).parent()[0].tag
         return parent in ['body', 'html']
 
+    def _format_classes(self, classes, spaces=''):
+        if classes is None:
+            return ''
+        _classes = ''
+        for _class in classes.split(' '):
+            _classes += '{spaces}.{}'.format(_class.strip(), spaces=spaces)
+        return '{}'.format(_classes)
+
+    def _format_id(self, id):
+        return '#{}'.format(id) if id is not None else ''
+
+    def _format_selector(self, el, id, classes):
+        selector = ''
+        if not id and not classes:
+            selector = el[0].tag
+        selector += '{}{}'.format(id, classes)
+        return selector
+
     def _add_nested(self, k, el):
         """Parse nested element by its children."""
         el = Pq(el)
         tagname = Pq(el)[0].tag
         if tagname in self.invalid_tags:
             return
-        selector = ''
-        id, classes = el.attr('id'), el.attr('class')
-        id = '#{}'.format(id) if id is not None else ''
-        classes = '.{}'.format(classes) if classes is not None else ''
-        if not id and not classes:
-            selector = el[0].tag
-        selector += '{}{}'.format(id, classes)
+        id = self._format_id(el.attr('id'))
+        classes = self._format_classes(el.attr('class'))
+        selector = self._format_selector(el, id, classes)
         children = Pq(el).children()
-        if self._is_root_body_node(el):
-            # Add for single nodes only
-            if not children:
+        if not self._is_root_body_node(el):
+            return
+        # Add for single nodes only
+        if not children:
+            self.selectors.add(selector)
+        # Build nested css by traversing all child nodes and getting
+        # their attributes.
+        while children:
+            for child in children:
+                # Add first root selector, before appending child selectors.
                 self.selectors.add(selector)
-            # Build nested css by traversing all child nodes and getting
-            # their attributes.
-            while children:
-                for child in children:
-                    child = Pq(child)
-                    id, classes = child.attr('id'), child.attr('class')
-                    # Order is important here. Id comes first, then classes,
-                    # and classes must not have a space at the beginning,
-                    # but must have one at the end, so that nested elements
-                    # are properly represented, as well as selector chains.
-                    if id is not None:
-                        selector += ' #{}'.format(id)
-                    if classes is not None:
-                        classes = '.'.join(classes.split(' '))
-                        selector += '.{} '.format(classes)
-                    # Update child
-                    children = Pq(child).children()
-                    # Add selector on each loop, to show
-                    # all variations of nesting in the css.
-                    self.selectors.add(selector)
-                    # Break on the first loop, since we replace children
-                    # in the while loop above,
-                    # thus preventing duplicate selectors.
-                    break
+                # Build out child selectors to add to this one.
+                child = Pq(child)
+                id, classes = child.attr('id'), child.attr('class')
+                # Order is important here. Id comes first, then classes,
+                # and classes must not have a space at the beginning,
+                # but must have one at the end, so that nested elements
+                # are properly represented, as well as selector chains.
+                if id is not None:
+                    selector += ' #{}'.format(id)
+                if classes is not None:
+                    selector += self._format_classes(classes, spaces=' ')
+                # Update child
+                children = Pq(child).children()
+                # Add selector on each loop, to show
+                # all levels of nesting in the CSS.
+                # e.g. .foo {}, .foo.bar {}. .foo.bar #baz
+                self.selectors.add(selector)
 
     def _add(self, k, el):
         """Parse element, without considering children."""
@@ -84,23 +98,29 @@ class CSSReflector(Reflector):
             for _class in classes.split(' '):
                 self.selectors['classes'].add(_class.strip())
 
-    def make_stylesheet(self, output=None, save_as_string=False):
-        """Generate stylesheet string."""
+    def _format_selectors(self, selectors):
+        out = ''
+        for sel in selectors:
+            out += '{} '.format(sel) + '{}'
+            if self.newlines_and_spaces:
+                out += '\n'
+        return out
+
+    def _format_stylesheet(self):
+        """Format the output for writing to file or string.
+        Styles can be divided as shallow, separate lists of ids and classes,
+        or compound, nested CSS (typical)."""
         out = ''
         if self.nested:
-            for sel in self.selectors:
-                out += '{} '.format(sel) + '{}'
-                if self.newlines_and_spaces:
-                    out += '\n'
+            out += self._format_selectors(self.selectors)
         else:
-            for id in self.selectors['ids']:
-                out += '#{} '.format(id.strip()) + '{}'
-                if self.newlines_and_spaces:
-                    out += '\n'
-            for _class in self.selectors['classes']:
-                out += '.{} '.format(_class.strip()) + '{}'
-                if self.newlines_and_spaces:
-                    out += '\n'
+            out += self._format_selectors(self.selectors['ids'])
+            out += self._format_selectors(self.selectors['classes'])
+        return out
+
+    def make_stylesheet(self, output=None, save_as_string=False):
+        """Generate stylesheet string."""
+        out = self._format_stylesheet()
         if save_as_string:
             return out
         self._write(output, out)
