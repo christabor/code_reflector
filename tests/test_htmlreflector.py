@@ -39,14 +39,28 @@ class SelectorOutputTestCase(unittest.TestCase):
         self._setup()
         res = self.ref.process_string('.foo#bar {}').extract().make_html(
             save_as_string=True)
-        expected = ('<div class="foo" id="bar"></div>')
+        expected = ('<div id="bar" class="foo"></div>')
+        self.assertEqual(res, expected)
+
+    def test_compound_multiclass(self):
+        self._setup()
+        res = self.ref.process_string('.foo.bar.bim {}').extract().make_html(
+            save_as_string=True)
+        expected = ('<div class="foo bar bim"></div>')
+        self.assertEqual(res, expected)
+
+    def test_compound_id_multiclass(self):
+        self._setup()
+        res = self.ref.process_string('#foo.bar.bim {}').extract().make_html(
+            save_as_string=True)
+        expected = ('<div id="foo" class="bar bim"></div>')
         self.assertEqual(res, expected)
 
     def test_compound_id_class(self):
         self._setup()
         res = self.ref.process_string('#foo.bar {}').extract().make_html(
             save_as_string=True)
-        expected = ('<div class="foo" id="bar"></div>')
+        expected = ('<div id="foo" class="bar"></div>')
         self.assertEqual(res, expected)
 
     def test_nested_simple_class(self):

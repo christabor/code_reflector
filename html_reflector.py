@@ -6,10 +6,7 @@ from string import ascii_lowercase
 DEBUG = __name__ == '__main__'
 
 """
-        NOTE!
-        NOTE!
-        WORK IN PROGRESS -- NOT COMPLETE OR FULLY WORKING!!!!
-
+WORK IN PROGRESS -- NOT COMPLETE OR FULLY WORKING!!!!
 """
 
 
@@ -55,10 +52,10 @@ class HTMLReflector(Reflector):
         or somewhere in between."""
         if '#' in piece:
             if piece.startswith('#'):
-                return ' id="{}"'.format(piece.replace('#', ''))
-            else:
-                pos = piece.find('#') + 1
-                return ' id="{}"'.format(piece[pos:])
+                piece = piece[1:]
+            # If this is a chained selector, stop before the next token
+            end = piece.find('.') if piece.find('.') != -1 else len(piece)
+            return ' id="{}"'.format(piece[:end].replace('#', ' '))
         else:
             return ''
 
@@ -67,10 +64,10 @@ class HTMLReflector(Reflector):
         or somewhere in between."""
         if '.' in piece:
             if piece.startswith('.'):
-                return ' class="{}"'.format(piece.replace('.', ''))
-            else:
-                pos = piece.find('.') + 1
-                return ' class="{}"'.format(piece[pos:])
+                piece = piece[1:]
+            # If this is a chained selector, stop before the next token
+            end = piece.find('#') if piece.find('#') != -1 else len(piece)
+            return ' class="{}"'.format(piece[:end].replace('.', ' '))
         else:
             return ''
 
@@ -91,9 +88,23 @@ class HTMLReflector(Reflector):
         else:
             return self.default_tag
 
+    def _get_attributes(self, piece):
+        if '#' in piece and not piece.startswith('#'):
+            start = piece.find('#')
+            id = self._get_id(piece[start:])
+            classes = self._get_class(piece)
+        elif '.' in piece and not piece.startswith('.'):
+            id = self._get_id(piece)
+            start = piece.find('.')
+            classes = self._get_class(piece[start:])
+            print('start', start, piece)
+        else:
+            id = self._get_id(piece)
+            classes = self._get_class(piece)
+        tag = self._get_tag(piece)
+        return tag, id, classes
+
     def _create_tag(self, selector):
-        #   1. .foo.bar
-        #   2. #foo#bar
         #   3. div.foo
         #   4. div.foo#bar, div#foo.bar
         #   5. div+#foo.bar
@@ -104,9 +115,8 @@ class HTMLReflector(Reflector):
         if len(pieces) == 1:
             pieces = [x.strip() for x in selector.split(' ')]
         for k, piece in enumerate(pieces):
-            tag = self._get_tag(piece)
-            id = self._get_id(piece)
-            classes = self._get_class(piece)
+            piece = piece.replace(' ', '')
+            tag, id, classes = self._get_attributes(piece)
             space = k * (' ' * 4) if self.newlines_and_spaces else ''
             html += '{space}<{tag}{id}{classes}>'.format(
                 piece, space=space, id=id, classes=classes, tag=tag)
