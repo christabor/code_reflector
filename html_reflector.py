@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+__author__ = """Chris Tabor (dxdstudio@gmail.com)"""
+
 from tinycss import make_parser
 from pprint import pprint as ppr
 from reflector import Reflector

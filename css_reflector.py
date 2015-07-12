@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+__author__ = """Chris Tabor (dxdstudio@gmail.com)"""
+
 from pyquery import PyQuery as Pq
 from reflector import Reflector
 from pprint import pprint as ppr

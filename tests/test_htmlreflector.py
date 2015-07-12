@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+__author__ = """Chris Tabor (dxdstudio@gmail.com)"""
+
 import unittest
 import html_reflector
 
