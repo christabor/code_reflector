@@ -26,3 +26,11 @@ class SelectorOutputTestCase(unittest.TestCase):
         expected = ('<div id="foo"><div id="bar"><div id="bim">'
                     '</div></div></div>')
         self.assertEqual(res, expected)
+
+    def test_nested_class(self):
+        self._setup()
+        res = self.ref.process_string('.foo .bar .bim {}').extract().make_html(
+            save_as_string=True)
+        expected = ('<div class="foo"><div class="bar"><div class="bim">'
+                    '</div></div></div>')
+        self.assertEqual(res, expected)
