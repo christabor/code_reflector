@@ -97,25 +97,28 @@ class HTMLReflector(Reflector):
             id = self._get_id(piece)
             start = piece.find('.')
             classes = self._get_class(piece[start:])
-            print('start', start, piece)
         else:
             id = self._get_id(piece)
             classes = self._get_class(piece)
         tag = self._get_tag(piece)
         return tag, id, classes
 
+    def _get_pieces(self, selector):
+        pieces = [x.strip() for x in selector.split('>')]
+        for k, piece in enumerate(pieces):
+            if ' ' in piece:
+                for token in reversed(piece.split(' ')):
+                    pieces.insert(k, token)
+                pieces.remove(piece)
+        return pieces
+
     def _create_tag(self, selector):
-        #   3. div.foo
         #   4. div.foo#bar, div#foo.bar
         #   5. div+#foo.bar
         #   6. .foo>.bar > div#bam div.foo
-
         html = ''
-        pieces = [x.strip() for x in selector.split('>')]
-        if len(pieces) == 1:
-            pieces = [x.strip() for x in selector.split(' ')]
+        pieces = self._get_pieces(selector)
         for k, piece in enumerate(pieces):
-            piece = piece.replace(' ', '')
             tag, id, classes = self._get_attributes(piece)
             space = k * (' ' * 4) if self.newlines_and_spaces else ''
             html += '{space}<{tag}{id}{classes}>'.format(
