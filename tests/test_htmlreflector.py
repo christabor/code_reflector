@@ -83,3 +83,12 @@ class SelectorOutputTestCase(unittest.TestCase):
             save_as_string=True)
         expected = ('<div id="foo"><div id="bar"></div></div>')
         self.assertEqual(res, expected)
+
+    def test_nested_multiid_multiclass_tag(self):
+        self._setup()
+        res = self.ref.process_string(
+            '.foo > .bar > section#bam section.quux {}').extract().make_html(
+                save_as_string=True)
+        expected = ('<div class="foo"><div class="bar"><section id="bam">'
+                    '<section class="quux"></section></section></div></div>')
+        self.assertEqual(res, expected)
