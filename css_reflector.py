@@ -80,7 +80,8 @@ class CSSReflector(Reflector):
                 if id is not None:
                     selector += ' #{}'.format(id)
                 if classes is not None:
-                    selector += self._format_classes(classes, spaces=' ')
+                    spaces = '' if id is not None else ' '
+                    selector += self._format_classes(classes, spaces=spaces)
                 # Update child
                 children = Pq(child).children()
                 # Add selector on each loop, to show

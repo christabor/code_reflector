@@ -84,3 +84,24 @@ class SelectorOutputTestCase(unittest.TestCase):
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
+
+    def test_nested_allmulti_complex(self):
+        html = """
+        <div class="foo" id="foo">
+            <div class="bar" id="boom">
+                <div class="quux">
+                    <div class="nested nested2" id="foo3"></div>
+                </div>
+                <div class="baz"></div>
+            </div>
+        </div>
+        """
+        expected = ('#foo.foo #boom.bar {}'
+                    '#foo.foo {}'
+                    '#foo.foo #boom.bar .quux .baz {}'
+                    '#foo.foo #boom.bar .quux {}'
+                    ).replace('\n', '')
+        self._setup()
+        res = self.ref.process_string(self._wrap(html)).make_stylesheet(
+            save_as_string=True)
+        self.assertEqual(res, expected)
