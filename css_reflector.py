@@ -77,17 +77,22 @@ class CSSReflector(Reflector):
                 # and classes must not have a space at the beginning,
                 # but must have one at the end, so that nested elements
                 # are properly represented, as well as selector chains.
-                if id is not None:
-                    selector += ' #{}'.format(id)
-                if classes is not None:
-                    spaces = '' if id is not None else ' '
-                    selector += self._format_classes(classes, spaces=spaces)
+                selector += self._add_id_and_classes(id, classes)
                 # Update child
                 children = Pq(child).children()
                 # Add selector on each loop, to show
                 # all levels of nesting in the CSS.
                 # e.g. .foo {}, .foo.bar {}. .foo.bar #baz
                 self.selectors.add(selector)
+
+    def _add_id_and_classes(self, id, classes):
+        extra = ''
+        if id is not None:
+            extra += ' #{}'.format(id)
+        if classes is not None:
+            spaces = '' if id is not None else ' '
+            extra += self._format_classes(classes, spaces=spaces)
+        return extra
 
     def _add(self, k, el):
         """Parse element, without considering children."""
