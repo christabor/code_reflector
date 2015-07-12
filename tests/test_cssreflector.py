@@ -34,7 +34,7 @@ class SelectorOutputTestCase(unittest.TestCase):
             '<div id="foo"><div id="bar"><div id="bim">'
             '</div></div></div>')).make_stylesheet(
                 save_as_string=True)
-        self.assertEqual(res, '#foo #bar #bim {}#foo #bar {}#foo {}')
+        self.assertEqual(res, '#foo {}#foo #bar {}#foo #bar #bim {}')
 
     def test_nested_class(self):
         self._setup()
@@ -42,7 +42,7 @@ class SelectorOutputTestCase(unittest.TestCase):
             '<div class="foo"><div class="bar"><div class="bim">'
             '</div></div></div>')).make_stylesheet(
                 save_as_string=True)
-        self.assertEqual(res, '.foo {}.foo .bar .bim {}.foo .bar {}')
+        self.assertEqual(res, '.foo {}.foo .bar {}.foo .bar .bim {}')
 
     def test_compound_class_id(self):
         self._setup()
@@ -76,11 +76,12 @@ class SelectorOutputTestCase(unittest.TestCase):
             </div>
         </div>
         """
-        expected = ('.foo {}'
-                    '.foo .bar #bam .quux {}'
-                    '.foo .bar #bam {}'
-                    '.foo .bar {}'
-                    ).replace('\n', '')
+        expected = (
+            '.foo {}'
+            '.foo .bar {}'
+            '.foo .bar #bam {}'
+            '.foo .bar #bam .quux {}'
+        ).replace('\n', '')
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
@@ -96,11 +97,67 @@ class SelectorOutputTestCase(unittest.TestCase):
             </div>
         </div>
         """
-        expected = ('#foo.foo #boom.bar {}'
-                    '#foo.foo {}'
-                    '#foo.foo #boom.bar .quux .baz {}'
-                    '#foo.foo #boom.bar .quux {}'
-                    ).replace('\n', '')
+        expected = (
+            '#foo.foo {}'
+            '#foo.foo #boom.bar {}'
+            '#foo.foo #boom.bar .quux {}'
+            '#foo.foo #boom.bar .quux .baz {}'
+            '#foo.foo #boom.bar .quux #foo3.nested.nested2 {}'
+        ).replace('\n', '')
+        self._setup()
+        res = self.ref.process_string(self._wrap(html)).make_stylesheet(
+            save_as_string=True)
+        self.assertEqual(res, expected)
+
+    def test_nested_deeply_nested(self):
+        html = """
+        <div class="foo0">
+            <div class="foo1">
+                <div class="foo2">
+                    <div class="foo3">
+                        <div class="foo4">
+                            <div class="foo5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+        expected = (
+            '.foo0 {}'
+            '.foo0 .foo1 {}'
+            '.foo0 .foo1 .foo2 {}'
+            '.foo0 .foo1 .foo2 .foo3 {}'
+            '.foo0 .foo1 .foo2 .foo3 .foo4 {}'
+            '.foo0 .foo1 .foo2 .foo3 .foo4 .foo5 {}'
+        ).replace('\n', '')
+        self._setup()
+        res = self.ref.process_string(self._wrap(html)).make_stylesheet(
+            save_as_string=True)
+        self.assertEqual(res, expected)
+
+    def test_nested_deeply_nested_multiclass(self):
+        html = """
+        <div class="foo0">
+            <div class="foo1 foo_1">
+                <div class="foo2">
+                    <div class="foo3">
+                        <div class="foo4">
+                            <div class="foo5 foo_5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+        expected = (
+            '.foo0 {}'
+            '.foo0 .foo1.foo_1 {}'
+            '.foo0 .foo1.foo_1 .foo2 {}'
+            '.foo0 .foo1.foo_1 .foo2 .foo3 {}'
+            '.foo0 .foo1.foo_1 .foo2 .foo3 .foo4 {}'
+            '.foo0 .foo1.foo_1 .foo2 .foo3 .foo4 .foo5.foo_5 {}'
+        ).replace('\n', '')
         self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)

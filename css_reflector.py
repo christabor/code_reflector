@@ -106,7 +106,7 @@ class CSSReflector(Reflector):
 
     def _format_selectors(self, selectors):
         out = ''
-        for sel in selectors:
+        for sel in sorted(selectors):
             out += '{} '.format(sel) + '{}'
             if self.newlines_and_spaces:
                 out += '\n'
