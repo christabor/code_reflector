@@ -29,6 +29,7 @@ class CSSReflector(Reflector):
         return parent in ['body', 'html']
 
     def _add_nested(self, k, el):
+        """Parse nested element by its children."""
         el = Pq(el)
         tagname = Pq(el)[0].tag
         if tagname in self.invalid_tags:
@@ -63,10 +64,12 @@ class CSSReflector(Reflector):
                     # all variations of nesting in the css.
                     self.selectors.add(selector)
                     # Break on the first loop, since we replace children
-                    # in the while loop above, thus prevent duplicate selectors.
+                    # in the while loop above,
+                    # thus preventing duplicate selectors.
                     break
 
     def _add(self, k, el):
+        """Parse element, without considering children."""
         el = Pq(el)
         id, classes = el.attr('id'), el.attr('class')
         if id is not None:
@@ -76,6 +79,7 @@ class CSSReflector(Reflector):
                 self.selectors['classes'].add(_class.strip())
 
     def make_stylesheet(self, output=None, save_as_string=False):
+        """Generate stylesheet string."""
         out = ''
         if self.nested:
             for sel in self.selectors:

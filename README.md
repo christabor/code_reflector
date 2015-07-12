@@ -11,7 +11,7 @@ Example:
 
 ```html
 <div id="foo"></div><div class="bar bim"></div>
-# becomes
+... it becomes
 #foo {} .bar {} .bim {}
 or, with nested=True set, and
 <div id="foo">
@@ -19,7 +19,7 @@ or, with nested=True set, and
         <div id="bam" class="foo foo2"></div>
     </div>
 </div>
-# becomes
+...it becomes
 #foo #bar #bam.foo.foo2 {}
 ```
 
