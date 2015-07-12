@@ -11,10 +11,18 @@ class SelectorOutputTestCase(unittest.TestCase):
         self._setup()
         res = self.ref.process_string('.foo {}').extract().make_html(
             save_as_string=True)
-        self.assertEqual(res, '<div class="foo">\n</div>\n')
+        self.assertEqual(res, '<div class="foo"></div>')
 
     def test_single_id(self):
         self._setup()
         res = self.ref.process_string('#foo {}').extract().make_html(
             save_as_string=True)
-        self.assertEqual(res, '<div id="foo">\n</div>\n')
+        self.assertEqual(res, '<div id="foo"></div>')
+
+    def test_nested_id(self):
+        self._setup()
+        res = self.ref.process_string('#foo #bar #bim {}').extract().make_html(
+            save_as_string=True)
+        expected = ('<div id="foo"><div id="bar"><div id="bim">'
+                    '</div></div></div>')
+        self.assertEqual(res, expected)

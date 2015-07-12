@@ -1,5 +1,4 @@
 from tinycss import make_parser
-from pyquery import PyQuery as Pq
 from pprint import pprint as ppr
 from reflector import Reflector
 from string import ascii_lowercase
@@ -16,11 +15,16 @@ DEBUG = __name__ == '__main__'
 
 class HTMLReflector(Reflector):
 
-    def __init__(self, default_tag='div'):
+    def __init__(self, default_tag='div', newlines_and_spaces=False):
         self.selectors = set()
         self.parser = make_parser('page3')
+        self.newlines_and_spaces = newlines_and_spaces
         self.default_tag = default_tag
         self.css = None
+
+    def __str__(self):
+        ppr(self.selectors)
+        return ''
 
     def process_string(self, css_string):
         """Parse stylesheet with tinycss."""
@@ -105,16 +109,20 @@ class HTMLReflector(Reflector):
             tag = self._get_tag(piece)
             id = self._get_id(piece)
             classes = self._get_class(piece)
-            space = k * (' ' * 4)
-            html += '{space}<{tag}{id}{classes}>\n'.format(
+            space = k * (' ' * 4) if self.newlines_and_spaces else ''
+            html += '{space}<{tag}{id}{classes}>'.format(
                 piece, space=space, id=id, classes=classes, tag=tag)
+            if self.newlines_and_spaces:
+                html += '\n'
         # To build the nested html, we need to loop over them in reverse,
         # to make sure we get the corresponding selector/html tag
         for k, piece in enumerate(reversed(pieces)):
             tag = self._get_tag(piece) if self._is_tag(piece) \
                 else self.default_tag
-            space = k * (' ' * 4)
-            html += '</{tag}>\n'.format(space=space, tag=tag)
+            space = k * (' ' * 4) if self.newlines_and_spaces else ''
+            html += '</{tag}>'.format(space=space, tag=tag)
+            if self.newlines_and_spaces:
+                html += '\n'
         return html
 
     def make_html(self, output=None, save_as_string=False):
