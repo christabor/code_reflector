@@ -133,16 +133,15 @@ class HTMLReflector(Reflector):
 
     def make_html(self, output=None, save_as_string=False):
         """Build out and write the actual HTML document."""
+        out = ''
+        for selector in self.selectors:
+            out += self._create_tag(selector)
         if save_as_string:
-            out = ''
-            for selector in self.selectors:
-                out += self._create_tag(selector)
             return out
         if not output.endswith('.html'):
             raise ValueError('{} if is not a valid html file.'.format(output))
         with open(output, 'wb+') as newfile:
-            for selector in self.selectors:
-                newfile.write(self._create_tag(selector))
+            newfile.write(out)
         return self
 
 if DEBUG:
