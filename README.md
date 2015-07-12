@@ -18,7 +18,7 @@ Example:
 
 ### HTML Reflector
 
-Takes CSS and converts it to corresponding HTML. Similar to Emmett, but fully OSS, and programmable. Also designed to work in conjunction with other **Reflector** modules.
+Takes CSS and converts it to corresponding HTML. Similar to Emmett, but fully OSS, and programmable (and handles spaces for nested selectors). Also designed to work in conjunction with other **Reflector** modules.
 
 Example:
 
