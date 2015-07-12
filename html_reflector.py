@@ -103,8 +103,6 @@ class HTMLReflector(Reflector):
         pieces = [x.strip() for x in selector.split('>')]
         if len(pieces) == 1:
             pieces = [x.strip() for x in selector.split(' ')]
-        print(pieces)
-
         for k, piece in enumerate(pieces):
             tag = self._get_tag(piece)
             id = self._get_id(piece)
@@ -116,13 +114,15 @@ class HTMLReflector(Reflector):
                 html += '\n'
         # To build the nested html, we need to loop over them in reverse,
         # to make sure we get the corresponding selector/html tag
-        for k, piece in enumerate(reversed(pieces)):
+        _k = len(pieces)
+        for piece in reversed(pieces):
             tag = self._get_tag(piece) if self._is_tag(piece) \
                 else self.default_tag
-            space = k * (' ' * 4) if self.newlines_and_spaces else ''
-            html += '</{tag}>'.format(space=space, tag=tag)
+            space = _k * (' ' * 4) if self.newlines_and_spaces else ''
+            html += '{space}</{tag}>'.format(space=space, tag=tag)
             if self.newlines_and_spaces:
                 html += '\n'
+            _k -= 1
         return html
 
     def make_html(self, output=None, save_as_string=False):
@@ -140,5 +140,5 @@ class HTMLReflector(Reflector):
         return self
 
 if DEBUG:
-    hreflector = HTMLReflector()
+    hreflector = HTMLReflector(newlines_and_spaces=True)
     hreflector.process('test.css').extract().make_html(output='output.html')
