@@ -5,10 +5,6 @@ from string import ascii_lowercase
 
 DEBUG = __name__ == '__main__'
 
-"""
-WORK IN PROGRESS -- NOT COMPLETE OR FULLY WORKING!!!!
-"""
-
 
 class HTMLReflector(Reflector):
 
@@ -113,9 +109,6 @@ class HTMLReflector(Reflector):
         return pieces
 
     def _create_tag(self, selector):
-        #   4. div.foo#bar, div#foo.bar
-        #   5. div+#foo.bar
-        #   6. .foo>.bar > div#bam div.foo
         html = ''
         pieces = self._get_pieces(selector)
         for k, piece in enumerate(pieces):
