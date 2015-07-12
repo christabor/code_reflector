@@ -55,9 +55,15 @@ class CSSReflector(Reflector):
                     if id is not None:
                         selector += ' #{}'.format(id)
                     if classes is not None:
+                        classes = '.'.join(classes.split(' '))
                         selector += '.{} '.format(classes)
+                    # Update child
                     children = Pq(child).children()
+                    # Add selector on each loop, to show
+                    # all variations of nesting in the css.
                     self.selectors.add(selector)
+                    # Break on the first loop, since we replace children
+                    # in the while loop above, thus prevent duplicate selectors.
                     break
 
     def _add(self, k, el):
