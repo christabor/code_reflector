@@ -12,7 +12,7 @@ Example:
 ```html
 <div id="foo"></div><div class="bar bim"></div>
 ... it becomes
-#foo {} .bar {} .bim {}
+#foo {} .bar.bim {}
 or, with nested=True set, and
 <div id="foo">
     <div id="bar">
@@ -20,6 +20,8 @@ or, with nested=True set, and
     </div>
 </div>
 ...it becomes
+#foo {}
+#foo #bar {}
 #foo #bar #bam.foo.foo2 {}
 ```
 
