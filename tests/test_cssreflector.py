@@ -86,23 +86,63 @@ class SelectorOutputTestCase(unittest.TestCase):
             save_as_string=True)
         self.assertEqual(res, expected)
 
-    def test_nested_allmulti_complex(self):
+    def test_nested_multiadjacent(self):
         html = """
-        <div class="foo" id="foo">
-            <div class="bar" id="boom">
-                <div class="quux">
-                    <div class="nested nested2" id="foo3"></div>
-                </div>
-                <div class="baz"></div>
+        <div class="foo"></div>
+        <div class="bar">
+            <div class="foo"></div>
+        </div>
+        <div class="baz"></div>
+        """
+        expected = (
+            '.bar {}'
+            '.bar .foo {}'
+            '.baz {}'
+            '.foo {}'
+        ).replace('\n', '')
+        self._setup()
+        res = self.ref.process_string(self._wrap(html)).make_stylesheet(
+            save_as_string=True)
+        self.assertEqual(res, expected)
+
+    def test_nested_multiadjacent_composite(self):
+        html = """
+        <div class="foo" id="foo"></div>
+        <div class="bar" id="bar">
+            <div class="foo"></div>
+        </div>
+        <div class="baz" id="baz"></div>
+        """
+        expected = (
+            '#bar.bar {}'
+            '#bar.bar .foo {}'
+            '#baz.baz {}'
+            '#foo.foo {}'
+        ).replace('\n', '')
+        self._setup()
+        res = self.ref.process_string(self._wrap(html)).make_stylesheet(
+            save_as_string=True)
+        self.assertEqual(res, expected)
+
+    def test_nested_multiadjacent_composite_complex(self):
+        html = """
+        <div class="foo" id="foo"></div>
+        <div class="bar" id="bar">
+            <div class="foo">
+                <div class="foo2"></div>
             </div>
+        </div>
+        <div class="baz" id="baz">
+            <div id="baz2" class="baz2"></div>
         </div>
         """
         expected = (
+            '#bar.bar {}'
+            '#bar.bar .foo {}'
+            '#bar.bar .foo .foo2 {}'
+            '#baz.baz {}'
+            '#baz.baz #baz2.baz2 {}'
             '#foo.foo {}'
-            '#foo.foo #boom.bar {}'
-            '#foo.foo #boom.bar .quux {}'
-            '#foo.foo #boom.bar .quux .baz {}'
-            '#foo.foo #boom.bar .quux #foo3.nested.nested2 {}'
         ).replace('\n', '')
         self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
