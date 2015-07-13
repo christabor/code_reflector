@@ -129,20 +129,28 @@ class SelectorOutputTestCase(unittest.TestCase):
         <div class="foo" id="foo"></div>
         <div class="bar" id="bar">
             <div class="foo">
-                <div class="foo2"></div>
+                <div class="foo2">
+                    <div class="foo3a foo3b foo3c" id="deepfoo"></div>
+                </div>
             </div>
         </div>
         <div class="baz" id="baz">
             <div id="baz2" class="baz2"></div>
+        </div>
+        <div class="quux" id="quux">
+            <div id="quux2" class="quux2"></div>
         </div>
         """
         expected = (
             '#bar.bar {}'
             '#bar.bar .foo {}'
             '#bar.bar .foo .foo2 {}'
+            '#bar.bar .foo .foo2 #deepfoo.foo3a.foo3b.foo3c {}'
             '#baz.baz {}'
             '#baz.baz #baz2.baz2 {}'
             '#foo.foo {}'
+            '#quux.quux {}'
+            '#quux.quux #quux2.quux2 {}'
         ).replace('\n', '')
         self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
