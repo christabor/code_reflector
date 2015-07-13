@@ -72,7 +72,6 @@ class CSSReflector(Reflector):
                 self.selectors.add(selector)
                 # 2. Add child
                 child = Pq(child)
-                child = Pq(child)
                 selector += self._add_id_and_classes(child)
                 self.selectors.add(selector)
                 # # 3. Move to next children
