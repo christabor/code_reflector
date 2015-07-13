@@ -113,6 +113,8 @@ class HTMLReflector(Reflector):
         return pieces
 
     def _create_tag(self, selector):
+        if ':' in selector:
+            return ''
         html = ''
         pieces = self._get_pieces(selector)
         for k, piece in enumerate(pieces):
@@ -150,4 +152,4 @@ class HTMLReflector(Reflector):
 
 if DEBUG:
     hreflector = HTMLReflector(newlines_and_spaces=True)
-    hreflector.process('test.css').extract().make_html(output='output.html')
+    hreflector.process('animate.css').extract().make_html(output='output.html')

@@ -23,6 +23,19 @@ class SelectorOutputTestCase(unittest.TestCase):
             save_as_string=True)
         self.assertEqual(res, '<div id="foo"></div>')
 
+    def test_pseudoselector(self):
+        self._setup()
+        res = self.ref.process_string('#foo:hover {}').extract().make_html(
+            save_as_string=True)
+        self.assertEqual(res, '')
+
+    def test_pseudoselector_mixed(self):
+        self._setup()
+        res = self.ref.process_string(
+            '#foo:hover {} #bar {}').extract().make_html(
+                save_as_string=True)
+        self.assertEqual(res, '<div id="bar"></div>')
+
     def test_nested_id(self):
         self._setup()
         res = self.ref.process_string('#foo #bar #bim {}').extract().make_html(
