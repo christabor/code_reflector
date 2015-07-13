@@ -10,18 +10,20 @@ Takes HTML and converts it to corresponding CSS. Though, it doesn't truly "conve
 Example:
 
 ```html
-<div id="foo"></div><div class="bar bim"></div>
-... it becomes
-#foo {} .bar.bim {}
-or, with nested=True set, and
 <div id="foo">
     <div id="bar">
         <div id="bam" class="foo foo2"></div>
     </div>
 </div>
-...it becomes
+```
+becomes
+```css
 #foo {}
 #foo #bar {}
+#foo #bar #bam.foo.foo2 {}
+```
+or, if nested is set to False,
+```css
 #foo #bar #bam.foo.foo2 {}
 ```
 
@@ -31,8 +33,12 @@ Takes CSS and converts it to corresponding HTML. Similar to Emmett, but fully OS
 
 Example:
 
+```css
+.foo.bar#bar
+```
+becomes
 ```html
-.foo#bar -> <div class="foo" id="bar"></div>
+<div class="foo bar" id="bar"></div>
 ```
 
 ## Tests
