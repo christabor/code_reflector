@@ -1,3 +1,5 @@
+[![MIT Badge](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/christabor/codeReflector/master/LICENSE)
+
 # codeReflector
 A suite of tools to parse and transform web formats, for web applications and automation.
 
