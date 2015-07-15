@@ -151,5 +151,5 @@ class HTMLReflector(Reflector):
         return self
 
 if DEBUG:
-    hreflector = HTMLReflector(newlines_and_spaces=True)
-    hreflector.process('animate.css').extract().make_html(output='output.html')
+    reflector = HTMLReflector(newlines_and_spaces=True)
+    reflector.process('animate.css').extract().make_html(output='output.html')

@@ -29,11 +29,22 @@ or, if nested is set to False,
 #foo #bar #bam.foo.foo2 {}
 ```
 
+```python
+css_reflector = CSSReflector(newlines_and_spaces=True)
+hreflector.process('myhtmlfile.html').make_stylesheet(output='output.css')
+```
+
 ### HTML Reflector
 
 Takes CSS and converts it to corresponding HTML. Similar to Emmett, but fully OSS, and programmable (and handles spaces for nested selectors). Also designed to work in conjunction with other **Reflector** components.
 
 Example:
+
+Using
+```python
+htmlreflector = HTMLReflector(newlines_and_spaces=True)
+htmlreflector.process('mycssfile.css').extract().make_html(output='output.html')
+```
 
 ```css
 .foo.bar#bar

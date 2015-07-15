@@ -155,5 +155,5 @@ class CSSReflector(Reflector):
 
 
 if DEBUG:
-    hreflector = CSSReflector(newlines_and_spaces=True)
-    hreflector.process('test.html').make_stylesheet('output-test.css')
+    reflector = CSSReflector(newlines_and_spaces=True)
+    reflector.process('test.html').make_stylesheet(output='output-test.css')
