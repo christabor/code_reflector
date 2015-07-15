@@ -11,6 +11,12 @@ Takes HTML and converts it to corresponding CSS. Though, it doesn't truly "conve
 
 Example:
 
+Using
+```python
+css_reflector = CSSReflector(newlines_and_spaces=True)
+hreflector.process('myhtmlfile.html').make_stylesheet(output='output.css')
+```
+
 ```html
 <div id="foo">
     <div id="bar">
@@ -27,11 +33,6 @@ becomes
 or, if nested is set to False,
 ```css
 #foo #bar #bam.foo.foo2 {}
-```
-
-```python
-css_reflector = CSSReflector(newlines_and_spaces=True)
-hreflector.process('myhtmlfile.html').make_stylesheet(output='output.css')
 ```
 
 ### HTML Reflector
