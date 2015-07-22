@@ -1,6 +1,7 @@
 test: "nosetests"
 language: python
 install: "pip install -r requirements.txt && python setup.py && python setup.py install"
+sudo: required
 python:
   - "2.6"
   - "2.7"
