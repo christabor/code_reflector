@@ -7,4 +7,6 @@ install:
 python:
     - "2.7"
 script:
-    coverage run --source=code_reflector nosetests
+    nosetests --with-coverage --cover-package=code_reflector
+after_success:
+    - coveralls
