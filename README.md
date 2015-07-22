@@ -60,6 +60,11 @@ becomes
 
 See [requirements.txt](requirements.txt) for more.
 
+## Installation
+```python
+python setup.py install
+```
+
 ## Tests
 
 Test coverage provided by nose. Run tests via ```python nosetests tests/```
