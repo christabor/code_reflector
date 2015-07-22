@@ -55,6 +55,10 @@ becomes
 <div class="foo bar" id="bar"></div>
 ```
 
+## Requirements
+
+See [requirements.txt](requirements.txt) for more.
+
 ## Tests
 
 Test coverage provided by nose. Run tests via ```python nosetests tests/```
