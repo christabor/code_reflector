@@ -1,4 +1,4 @@
-test: "python nosetests tests/"
+test: "nosetests"
 language: python
 install: "pip install -r requirements.txt && python setup.py && python setup.py install"
 python:
