@@ -3,7 +3,7 @@
 __author__ = """Chris Tabor (dxdstudio@gmail.com)"""
 
 import unittest
-import css_reflector
+from code_reflector import css_reflector
 
 
 class SelectorOutputTestCase(unittest.TestCase):
