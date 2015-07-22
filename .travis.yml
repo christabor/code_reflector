@@ -1,7 +1,6 @@
 test: "python nosetests tests/"
 language: python
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements.txt && python setup.py && python setup.py install"
 python:
   - "2.6"
   - "2.7"
-script: nosetests
