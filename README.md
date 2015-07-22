@@ -58,7 +58,8 @@ becomes
 
 ## Requirements
 
-See [requirements.txt](requirements.txt) for more.
+Requires Python 2.7+
+Packages: see [requirements.txt](requirements.txt) for more.
 
 ## Installation
 ```python
