@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/christabor/codeReflector.svg?branch=master)](https://travis-ci.org/christabor/codeReflector)
 [![MIT Badge](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/christabor/codeReflector/master/LICENSE)
 
 # codeReflector
