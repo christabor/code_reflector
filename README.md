@@ -1,6 +1,7 @@
 [![Coverage Status](https://coveralls.io/repos/christabor/codeReflector/badge.svg?branch=master&service=github)](https://coveralls.io/github/christabor/codeReflector?branch=master)
 [![Build Status](https://travis-ci.org/christabor/codeReflector.svg?branch=master)](https://travis-ci.org/christabor/codeReflector)
 [![MIT Badge](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/christabor/codeReflector/master/LICENSE)
+![Donation badge](https://img.shields.io/gratipay/christabor.svg)
 
 # codeReflector
 A suite of tools to parse and transform web formats, for web applications and automation.
