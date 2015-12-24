@@ -16,6 +16,8 @@ Example:
 
 Using
 ```python
+from code_reflector import css_reflector as cssref
+
 reflector = CSSReflector(newlines_and_spaces=True)
 reflector.process('myhtmlfile.html').make_stylesheet(output='output.css')
 ```
@@ -46,6 +48,8 @@ Example:
 
 Using
 ```python
+from code_reflector import html_reflector as htmlref
+
 reflector = HTMLReflector(newlines_and_spaces=True)
 reflector.process('mycssfile.css').extract().make_html(output='output.html')
 ```
