@@ -8,28 +8,25 @@ from code_reflector import css_reflector
 
 class SelectorOutputTestCase(unittest.TestCase):
 
-    def _setup(self):
+    def setUp(self):
         self.ref = css_reflector.CSSReflector()
 
     def _wrap(self, html):
         return '<html><body>{}</body></html>'.format(html)
 
     def test_single_class(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div class="foo"></div>')).make_stylesheet(
                 save_as_string=True)
         self.assertEqual(res, '.foo {}')
 
     def test_single_id(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div id="foo"></div>')).make_stylesheet(
                 save_as_string=True)
         self.assertEqual(res, '#foo {}')
 
     def test_nested_id(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div id="foo"><div id="bar"><div id="bim">'
             '</div></div></div>')).make_stylesheet(
@@ -37,7 +34,6 @@ class SelectorOutputTestCase(unittest.TestCase):
         self.assertEqual(res, '#foo {}#foo #bar {}#foo #bar #bim {}')
 
     def test_nested_class(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div class="foo"><div class="bar"><div class="bim">'
             '</div></div></div>')).make_stylesheet(
@@ -45,28 +41,24 @@ class SelectorOutputTestCase(unittest.TestCase):
         self.assertEqual(res, '.foo {}.foo .bar {}.foo .bar .bim {}')
 
     def test_compound_class_id(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div id="bar" class="foo"></div>')).make_stylesheet(
                 save_as_string=True)
         self.assertEqual(res, '#bar.foo {}')
 
     def test_compound_multiclass(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div class="foo bar bim"></div>')).make_stylesheet(
                 save_as_string=True)
         self.assertEqual(res, '.foo.bar.bim {}')
 
     def test_compound_id_multiclass(self):
-        self._setup()
         res = self.ref.process_string(self._wrap(
             '<div id="foo" class="bar bim bam"></div>')).make_stylesheet(
                 save_as_string=True)
         self.assertEqual(res, '#foo.bar.bim.bam {}')
 
     def test_nested_multiid_multiclass_tag(self):
-        self._setup()
         html = """
         <div class="foo">
             <div class="bar">
@@ -100,7 +92,6 @@ class SelectorOutputTestCase(unittest.TestCase):
             '.baz {}'
             '.foo {}'
         ).replace('\n', '')
-        self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
@@ -119,7 +110,6 @@ class SelectorOutputTestCase(unittest.TestCase):
             '#baz.baz {}'
             '#foo.foo {}'
         ).replace('\n', '')
-        self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
@@ -152,7 +142,6 @@ class SelectorOutputTestCase(unittest.TestCase):
             '#quux.quux {}'
             '#quux.quux #quux2.quux2 {}'
         ).replace('\n', '')
-        self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
@@ -179,7 +168,6 @@ class SelectorOutputTestCase(unittest.TestCase):
             '.foo0 .foo1 .foo2 .foo3 .foo4 {}'
             '.foo0 .foo1 .foo2 .foo3 .foo4 .foo5 {}'
         ).replace('\n', '')
-        self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
@@ -206,7 +194,6 @@ class SelectorOutputTestCase(unittest.TestCase):
             '.foo0 .foo1.foo_1 .foo2 .foo3 .foo4 {}'
             '.foo0 .foo1.foo_1 .foo2 .foo3 .foo4 .foo5.foo_5 {}'
         ).replace('\n', '')
-        self._setup()
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
