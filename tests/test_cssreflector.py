@@ -197,3 +197,56 @@ class SelectorOutputTestCase(unittest.TestCase):
         res = self.ref.process_string(self._wrap(html)).make_stylesheet(
             save_as_string=True)
         self.assertEqual(res, expected)
+
+
+class FormatClassesTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.ref = css_reflector.CSSReflector()
+        self.ref.selectors = {'ids': set(['foo', 'bar'])}
+
+    def test_format_classes_none(self):
+        res = self.ref._format_classes(None)
+        self.assertEqual(res, '')
+
+    def test_format_classes(self):
+        res = self.ref._format_classes('foo bar quux')
+        self.assertEqual(res, '.foo.bar.quux')
+
+    def test_format_classes_spaces(self):
+        res = self.ref._format_classes('foo bar quux', spaces='   ')
+        self.assertEqual(res, '   .foo   .bar   .quux')
+
+
+class FormatIdTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.ref = css_reflector.CSSReflector()
+
+    def test_format_id_none(self):
+        res = self.ref._format_id(None)
+        self.assertEqual(res, '')
+
+    def test_format_id(self):
+        res = self.ref._format_id('foobar')
+        self.assertEqual(res, '#foobar')
+
+
+class FormatSelectorsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.ref = css_reflector.CSSReflector()
+        self.ref.selectors = {'ids': set(['foo', 'bar'])}
+
+    def test_format_selectors(self):
+        res = self.ref._format_selectors(self.ref.selectors)
+        self.assertIsInstance(res, str)
+        self.assertTrue('{}' in res)
+
+    def test_format_selectors_newline(self):
+        self.ref.newlines_and_spaces = True
+        res = self.ref._format_selectors(self.ref.selectors)
+        self.assertTrue('\n' in res)
+        self.ref.newlines_and_spaces = False
+        res = self.ref._format_selectors(self.ref.selectors)
+        self.assertTrue('\n' not in res)
